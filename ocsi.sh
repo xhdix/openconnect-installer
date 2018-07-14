@@ -122,7 +122,7 @@ sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.129.0/' /etc/ocserv/
 sed -i '/route = 10.10.10.0/255.255.255.0/s/^/#/g' /etc/ocserv/ocserv.conf
 sed -i '/route = 192.168.0.0/255.255.0.0/s/^/#/g' /etc/ocserv/ocserv.conf
 sed -i '/route = fef4:db8:1000:1001::/64/s/^/#/g' /etc/ocserv/ocserv.conf
-sed -i '/no-route = 192.168.5.0/255.255.255.0/s/^/#/g@' /etc/ocserv/ocserv.conf
+sed -i '/no-route = 192.168.5.0/255.255.255.0/s/^/#/g' /etc/ocserv/ocserv.conf
 
 iptables -t nat -A POSTROUTING -j MASQUERADE
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT
