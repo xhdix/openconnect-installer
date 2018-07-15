@@ -35,7 +35,7 @@ while [ "$1" != "" ]; do
     shift
 done
 
-if [ SERVER_IP == "" ] ; then
+if [ $SERVER_IP == "" ] ; then
   usage
   exit
 fi
