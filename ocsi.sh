@@ -5,7 +5,9 @@
 
 usage()
 {
-    echo "usage: sysinfo_page [[[-i ip ] [-u username] [-c certname ] [-o orgname]] | [-h]]"
+    echo "usage:"
+    echo "bash ocsi.sh -i your-server-IP -u first-username -c certificate-name -o organization-name"
+    ##echo "usage: sysinfo_page [[[-i ip ] [-u username] [-c certname ] [-o orgname]] | [-h]]"
 }
 
 
