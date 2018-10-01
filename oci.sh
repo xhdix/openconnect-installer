@@ -1,4 +1,4 @@
-####!/bin/bash
+#!/bin/bash
 # pre-alpha version for openconnect installer in Debian
 #
 # bash ocsi.sh your-server-IP first-username certificate-name organization-name
@@ -14,6 +14,11 @@ SERVER_IP=$1
 USER_NAME=$2
 SERVICE_NAME=$3
 ORG_NAME=$4
+
+if [[ $SERVER_IP == "" ]] ; then
+  echo "run:\n bash ocsi.sh your-server-IP first-username certificate-name organization-name"
+  exit
+fi
 
 lsof -i :443
 
