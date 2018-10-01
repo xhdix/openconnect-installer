@@ -68,8 +68,8 @@ sed -i 's/auth = "pam\[gid-min=1000]"/auth = "plain\[\/etc\/ocserv\/ocpasswd]"/g
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf
 sed -i 's/dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf
 sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf
-sed -i 's/server-cert=\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/server-cert=\/etc\/ocserv\/server-cert.pem/' /etc/ocserv/ocserv.conf
-sed -i 's/server-key=\/etc\/ssl\/private\/ssl-cert-snakeoil.key/server-key=\/etc\/ocserv\/server-key.pem/' /etc/ocserv/ocserv.conf
+sed -i 's/server-cert = \/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/server-cert=\/etc\/ocserv\/server-cert.pem/' /etc/ocserv/ocserv.conf
+sed -i 's/server-key = \/etc\/ssl\/private\/ssl-cert-snakeoil.key/server-key=\/etc\/ocserv\/server-key.pem/' /etc/ocserv/ocserv.conf
 sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.129.0/' /etc/ocserv/ocserv.conf
 sed -i 's/route = 10.10.10.0\/255.255.255.0/#route = 10.10.10.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
 sed -i 's/route = 192.168.0.0\/255.255.0.0/#route = 192.168.0.0\/255.255.0.0/' /etc/ocserv/ocserv.conf
