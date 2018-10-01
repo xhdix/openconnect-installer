@@ -173,4 +173,4 @@ iptables-save > /etc/iptables.rules
 
 #reboot
 
-#apt install fail2ban lynis bmon -y
+#apt install fail2ban lynis bmon clamav clamav-daemon aide -y
