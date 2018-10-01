@@ -28,8 +28,8 @@ cd ~
 mkdir certificates
 cd certificates
 cat > ca.tmpl << "EOF"
-cn="$SERVICE_NAME"
-organization="$ORG_NAME"
+cn="SERVICE_NAME"
+organization="ORG_NAME"
 serial=1
 expiration_days=3650
 ca
@@ -38,17 +38,22 @@ cert_signing_key
 crl_signing_key
 EOF
 
+sed -i "s/\SERVICE_NAME/$SERVICE_NAME/" ./ca.tmpl
+sed -i "s/\ORG_NAME/$ORG_NAME/" ./ca.tmpl
+
 certtool --generate-privkey --outfile ca-key.pem
 certtool --generate-self-signed --load-privkey ca-key.pem --template ca.tmpl --outfile ca-cert.pem
 cat > server.tmpl << "EOF"
-cn="$SERVER_IP"
-organization="$ORG_NAME"
+cn="SERVER_IP"
+organization="ORG_NAME"
 expiration_days=3650
 signing_key
 encryption_key
 tls_www_server
 EOF
 
+sed -i "s/\SERVER_IP/$SERVER_IP/" ./server.tmpl
+sed -i "s/\ORG_NAME/$ORG_NAME/" ./server.tmpl
 
 certtool --generate-privkey --outfile server-key.pem
 certtool --generate-certificate --load-privkey server-key.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem --template server.tmpl --outfile server-cert.pem
