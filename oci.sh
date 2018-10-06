@@ -99,13 +99,15 @@ sed -i 's/Requires=ocserv.socket/#Requires=ocserv.socket/' /etc/systemd/system/o
 sed -i 's/Also=ocserv.socket/#Also=ocserv.socket/' /etc/systemd/system/ocserv.service
 
 systemctl daemon-reload
-systemctl stop ocserv.socket
-systemctl disable ocserv.socket
-systemctl restart ocserv.service
-systemctl status ocserv.service
+systemctl stop ocserv.socket > /dev/null
+systemctl disable ocserv.socket > /dev/null
+systemctl restart ocserv.service > /dev/null
+systemctl status ocserv.service > /dev/null
 
 apt install iptables-persistent
 #input ok 
 #input ok
 
 iptables-save > /etc/iptables.rules
+
+systemctl status ocserv.service
