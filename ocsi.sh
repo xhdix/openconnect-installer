@@ -155,8 +155,8 @@ systemctl mask ocserv.socket
 
 cp /lib/systemd/system/ocserv.service /etc/systemd/system/ocserv.service
 
-sed -i 's/Requires = ocserv.socket/#Requires=ocserv.socket/' /etc/systemd/system/ocserv.service
-sed -i 's/Also = ocserv.socket/#Also=ocserv.socket/' /etc/systemd/system/ocserv.service
+sed -i 's/Requires=ocserv.socket/#Requires=ocserv.socket/' /etc/systemd/system/ocserv.service
+sed -i 's/Also=ocserv.socket/#Also=ocserv.socket/' /etc/systemd/system/ocserv.service
 
 systemctl daemon-reload
 systemctl stop ocserv.socket
