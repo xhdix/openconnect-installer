@@ -47,40 +47,6 @@ if [[ $SERVER_IP == "" ]] ; then
   exit
 fi
 
-echo 
-echo "LC_ALL=en_US.UTF-8" >> /etc/environment
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
-sh -c "echo 'LC_ALL=en_US.UTF-8\nLANG=en_US.UTF-8' >> /etc/environment"
-
-cat > /etc/default/locale << "EOF"
-LANGUAGE=en_US.UTF-8,
-LC_ALL=en_US.UTF-8,
-LC_MONETARY=en_US.UTF-8,
-LC_ADDRESS=en_US.UTF-8,
-LC_TELEPHONE=en_US.UTF-8,
-LC_NAME=en_US.UTF-8,
-LC_MEASUREMENT=en_US.UTF-8,
-LC_IDENTIFICATION=en_US.UTF-8,
-LC_NUMERIC=en_US.UTF-8,
-LC_PAPER=en_US.UTF-8,
-LANG=en_US.UTF-8
-EOF
-
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-locale-gen en_US en_US.UTF-8
-dpkg-reconfigure locales
-#input ok
-#input ok
-
-
-locale
-update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-#apt install language-pack-en-base  
-
-lsof -i :443
 
 apt update > /dev/null
 apt dist-upgrade 
