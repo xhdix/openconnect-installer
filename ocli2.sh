@@ -113,7 +113,7 @@ sysctl -p /etc/sysctl.conf
 if [[ $LIST != "" ]] ; then
   while read -r -a line; do
 	  echo "For user ${line[0]} password is update with ${line[1]}"
-    echo "${line[1]}" | sudo ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}"
+    echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}"
   done < $LIST
   exit
 fi
