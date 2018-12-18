@@ -54,9 +54,8 @@ apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev
 apt install ocserv -y > /dev/null
 
 apt install gnutls-bin -y > /dev/null
-
-cd ~
 mkdir certificates
+cp $LIST certificates
 cd certificates
 cat > ca.tmpl << "EOF"
 cn="SERVICE_NAME"
