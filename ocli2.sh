@@ -105,7 +105,7 @@ sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 iptables -I INPUT -p udp --dport 443 -j ACCEPT
 iptables -t nat -A POSTROUTING -j MASQUERADE
-iptables -A FORWARD -s 192.168.129.0/21 -j ACCEPT
+iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 
