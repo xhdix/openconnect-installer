@@ -1,19 +1,19 @@
 #!/bin/bash
 # pre-alpha version for openconnect installer in Debian
 #
-# bash oci.sh your-server-IP first-username certificate-name organization-name
+# bash oci.sh first-username certificate-name organization-name
 
 ###### Main
 
-SERVER_IP=`ifconfig | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::"`
+SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`
 USER_NAME="testuser"
 SERVICE_NAME="service"
 ORG_NAME="organization"
 
-SERVER_IP=$1
-USER_NAME=$2
-SERVICE_NAME=$3
-ORG_NAME=$4
+#SERVER_IP=$1
+USER_NAME=$1
+SERVICE_NAME=$2
+ORG_NAME=$3
 
 if [[ $SERVER_IP == "" ]] ; then
   echo "run:\n bash oci.sh your-server-IP first-username certificate-name organization-name"
