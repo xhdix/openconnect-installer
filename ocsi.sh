@@ -13,7 +13,7 @@ usage()
 
 ###### Main
 
-SERVER_IP=`ifconfig | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::"`
+SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`
 USER_NAME="testuser"
 SERVICE_NAME="service"
 ORG_NAME="organization"
