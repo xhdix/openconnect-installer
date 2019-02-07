@@ -1,19 +1,19 @@
 #!/bin/bash
 # pre-alpha version for openconnect installer in Debian
 #
-# bash oci.sh your-server-IP first-username certificate-name organization-name
+# bash oci.sh first-username certificate-name organization-name
 
 ###### Main
 
-SERVER_IP=
+SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`
 USER_NAME="testuser"
 SERVICE_NAME="service"
 ORG_NAME="organization"
 
-SERVER_IP=$1
-USER_NAME=$2
-SERVICE_NAME=$3
-ORG_NAME=$4
+#SERVER_IP=$1
+USER_NAME=$1
+SERVICE_NAME=$2
+ORG_NAME=$3
 
 if [[ $SERVER_IP == "" ]] ; then
   echo "run:\n bash oci.sh your-server-IP first-username certificate-name organization-name"
@@ -70,8 +70,9 @@ sed -i 's/dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.co
 sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf
 sed -i 's/server-cert = \/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/server-cert=\/etc\/ocserv\/server-cert.pem/' /etc/ocserv/ocserv.conf
 sed -i 's/server-key = \/etc\/ssl\/private\/ssl-cert-snakeoil.key/server-key=\/etc\/ocserv\/server-key.pem/' /etc/ocserv/ocserv.conf
-sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.129.0/' /etc/ocserv/ocserv.conf
+sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf
 sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf
+sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf
 sed -i 's/route = 10.10.10.0\/255.255.255.0/#route = 10.10.10.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
 sed -i 's/route = 192.168.0.0\/255.255.0.0/#route = 192.168.0.0\/255.255.0.0/' /etc/ocserv/ocserv.conf
 sed -i 's/route = fef4:db8:1000:1001::\/64/#route = fef4:db8:1000:1001::\/64/' /etc/ocserv/ocserv.conf
@@ -80,6 +81,7 @@ sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 iptables -I INPUT -p udp --dport 443 -j ACCEPT
 iptables -t nat -A POSTROUTING -j MASQUERADE
+iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
