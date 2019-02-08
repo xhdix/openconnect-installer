@@ -136,7 +136,7 @@ systemctl disable ocserv.socket > /dev/null
 systemctl restart ocserv.service > /dev/null
 systemctl status ocserv.service > /dev/null
 
-apt install iptables-persistent
+apt install iptables-persistent -y
 #input ok 
 #input ok
 
