@@ -132,7 +132,7 @@ sed -i 's/server-cert = \/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/server-cert=\/e
 sed -i 's/server-key = \/etc\/ssl\/private\/ssl-cert-snakeoil.key/server-key=\/etc\/ocserv\/server-key.pem/' /etc/ocserv/ocserv.conf
 sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf
 sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf
-sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf
+#sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf # for use server like gateway
 sed -i 's/route = 10.10.10.0\/255.255.255.0/#route = 10.10.10.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
 sed -i 's/route = 192.168.0.0\/255.255.0.0/#route = 192.168.0.0\/255.255.0.0/' /etc/ocserv/ocserv.conf
 sed -i 's/route = fef4:db8:1000:1001::\/64/#route = fef4:db8:1000:1001::\/64/' /etc/ocserv/ocserv.conf
@@ -167,7 +167,7 @@ systemctl disable ocserv.socket > /dev/null
 systemctl restart ocserv.service > /dev/null
 systemctl status ocserv.service > /dev/null
 
-apt install iptables-persistent
+apt install iptables-persistent -y
 #input ok 
 #input ok
 
