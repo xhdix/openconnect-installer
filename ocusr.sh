@@ -1,5 +1,5 @@
 #!/bin/bash
-#bash ocsi.sh list-file-name
+#bash ocusr.sh list-file-name
 LIST=$1
 if [[ $LIST != "" ]] ; then
   while read -r -a line; do
