@@ -124,6 +124,8 @@ if [[ $LIST != "" ]] ; then
   exit
 fi
 
+sleep 10
+
 systemctl enable ocserv.service
 
 systemctl mask ocserv.socket
