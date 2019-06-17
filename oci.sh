@@ -92,6 +92,8 @@ ocpasswd -c /etc/ocserv/ocpasswd $USER_NAME
 #ipnut password
 #input password
 
+sleep 5
+
 systemctl enable ocserv.service
 
 systemctl mask ocserv.socket
@@ -110,6 +112,8 @@ systemctl status ocserv.service > /dev/null
 apt install iptables-persistent -y
 #input ok 
 #input ok
+
+sleep 5
 
 iptables-save > /etc/iptables.rules
 
