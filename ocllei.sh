@@ -72,6 +72,7 @@ dpkg-reconfigure locales
 #input ok
 #input ok
 
+sleep 5
 
 locale
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
@@ -124,7 +125,7 @@ if [[ $LIST != "" ]] ; then
   exit
 fi
 
-sleep 10
+sleep 5
 
 systemctl enable ocserv.service
 
@@ -144,6 +145,8 @@ systemctl status ocserv.service > /dev/null
 apt install iptables-persistent -y 
 #input ok 
 #input ok
+
+sleep 5
 
 iptables-save > /etc/iptables.rules
 
