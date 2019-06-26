@@ -49,6 +49,8 @@ yum repolist enabled > /dev/null
 
 yum install ocserv certbot -y > /dev/null
 
+netstat -tulnp
+
 sleep 3
 
 certbot certonly --standalone --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME
@@ -113,6 +115,7 @@ systemctl enable iptables
 
 service iptables save
 
+systemctl iptables start
 
 journalctl |grep ocserv
 
