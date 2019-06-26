@@ -1,7 +1,7 @@
 #!/bin/bash
-# pre-alpha version for openconnect installer in Debian -- let's ecnrypt 
+# pre-alpha version for openconnect installer in centos -- let's ecnrypt 
 # 
-# bash ocsi.sh -f username-list-file -n host-name -e email-address
+# bash ocllei-centos.sh -f username-list-file -n host-name -e email-address
 
 usage()
 {
