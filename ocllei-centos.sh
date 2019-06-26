@@ -108,6 +108,8 @@ systemctl disable ocserv.socket > /dev/null
 systemctl restart ocserv.service > /dev/null
 systemctl status ocserv.service > /dev/null
 
+iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+
 
 yum install iptables-services -y > /dev/null
 
