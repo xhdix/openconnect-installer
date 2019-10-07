@@ -1,2 +1,4 @@
 # openconnect-installer
-Openconnect installer - Pre-Alpha in Debian 
+Openconnect installer - Pre-Alpha in Debian and CentOS
+
+
