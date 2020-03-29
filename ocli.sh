@@ -88,7 +88,7 @@ wait
 
 apt update > /dev/null &
 wait
-apt dist-upgrade  &
+apt dist-upgrade -y &
 wait
 apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev -y > /dev/null &
 wait

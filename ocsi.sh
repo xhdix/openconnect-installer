@@ -84,14 +84,14 @@ update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
 #lsof -i :443
 
-apt update &
+apt update > /dev/null &
 wait
 apt dist-upgrade &
 wait
-apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev -y &
-apt install ocserv -y &
+apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev -y > /dev/null &
+apt install ocserv -y > /dev/null &
 
-apt install gnutls-bin -y &
+apt install gnutls-bin -y > /dev/null &
 wait
 
 cd ~

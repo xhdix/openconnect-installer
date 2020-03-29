@@ -44,7 +44,7 @@ if [[ $SERVER_IP == "" ]] ; then
   exit
 fi
 
-yum update -y > /dev/null &
+yum update -y &
 wait
 yum install epel-release -y > /dev/null &
 wait
@@ -126,7 +126,7 @@ systemctl status ocserv.service > /dev/null
 iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
 
-yum install iptables-services -y > /dev/null &
+yum install iptables-services -y &
 wait
 
 systemctl enable iptables &
