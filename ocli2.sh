@@ -13,7 +13,8 @@ usage()
 
 ###### Main
 
-SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`
+SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"` &
+wait
 LIST=""
 SERVICE_NAME="service"
 ORG_NAME="organization"
@@ -48,12 +49,17 @@ if [[ $SERVER_IP == "" ]] ; then
 fi
 
 
-apt update > /dev/null
-apt dist-upgrade 
-apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev -y > /dev/null
-apt install ocserv -y > /dev/null
+apt update > /dev/null &
+wait
+apt dist-upgrade  &
+wait
+apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev -y > /dev/null &
+wait
+apt install ocserv -y > /dev/null &
+wait
 
-apt install gnutls-bin -y > /dev/null
+apt install gnutls-bin -y > /dev/null &
+wait
 mkdir certificates
 cp $LIST certificates
 cd certificates
@@ -71,8 +77,10 @@ EOF
 sed -i "s/\SERVICE_NAME/$SERVICE_NAME/" ./ca.tmpl
 sed -i "s/\ORG_NAME/$ORG_NAME/" ./ca.tmpl
 
-certtool --generate-privkey --outfile ca-key.pem  > /dev/null
-certtool --generate-self-signed --load-privkey ca-key.pem --template ca.tmpl --outfile ca-cert.pem > /dev/null
+certtool --generate-privkey --outfile ca-key.pem  > /dev/null &
+wait
+certtool --generate-self-signed --load-privkey ca-key.pem --template ca.tmpl --outfile ca-cert.pem > /dev/null &
+wait
 cat > server.tmpl << "EOF"
 cn="SERVER_IP"
 organization="ORG_NAME"
@@ -85,8 +93,10 @@ EOF
 sed -i "s/\SERVER_IP/$SERVER_IP/" ./server.tmpl
 sed -i "s/\ORG_NAME/$ORG_NAME/" ./server.tmpl
 
-certtool --generate-privkey --outfile server-key.pem > /dev/null
-certtool --generate-certificate --load-privkey server-key.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem --template server.tmpl --outfile server-cert.pem > /dev/null
+certtool --generate-privkey --outfile server-key.pem > /dev/null &
+wait
+certtool --generate-certificate --load-privkey server-key.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem --template server.tmpl --outfile server-cert.pem > /dev/null &
+wait
 cp server-cert.pem server-key.pem /etc/ocserv
 
 sed -i 's/auth = "pam\[gid-min=1000]"/auth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
@@ -111,40 +121,49 @@ iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 
-sysctl -p /etc/sysctl.conf
+sysctl -p /etc/sysctl.conf &
+wait
 
 if [[ $LIST != "" ]] ; then
   while read -r -a line; do
 	  echo "For user ${line[0]} password is update with ${line[1]}"
-    echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}"
+    echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}" &
+    wait
   done < $LIST
   exit
 fi
 
-sleep 5
 
-systemctl enable ocserv.service
+systemctl enable ocserv.service &
+wait
 
-systemctl mask ocserv.socket
+systemctl mask ocserv.socket &
+wait
 
-cp /lib/systemd/system/ocserv.service /etc/systemd/system/ocserv.service
+cp /lib/systemd/system/ocserv.service /etc/systemd/system/ocserv.service &
+wait
 
 sed -i 's/Requires=ocserv.socket/#Requires=ocserv.socket/' /etc/systemd/system/ocserv.service
 sed -i 's/Also=ocserv.socket/#Also=ocserv.socket/' /etc/systemd/system/ocserv.service
 
-systemctl daemon-reload
-systemctl stop ocserv.socket > /dev/null
-systemctl disable ocserv.socket > /dev/null
-systemctl restart ocserv.service > /dev/null
+systemctl daemon-reload &
+wait
+systemctl stop ocserv.socket > /dev/null &
+wait
+systemctl disable ocserv.socket > /dev/null &
+wait
+systemctl restart ocserv.service > /dev/null &
+wait
 systemctl status ocserv.service > /dev/null
 
-apt install iptables-persistent -y
+apt install iptables-persistent -y &
 #input ok 
 #input ok
 
-sleep 5
+wait
 
-iptables-save > /etc/iptables.rules
+iptables-save > /etc/iptables.rules &
+wait
 
 
 journalctl |grep ocserv

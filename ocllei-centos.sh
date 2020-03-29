@@ -12,7 +12,8 @@ usage()
 
 ###### Main
 
-SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`
+SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`  &
+wait
 LIST=""
 HOST_NAME=""
 EMAIL_ADDR=""
@@ -43,17 +44,23 @@ if [[ $SERVER_IP == "" ]] ; then
   exit
 fi
 
-yum update -y > /dev/null
-yum install epel-release -y > /dev/null
-yum repolist enabled > /dev/null
+yum update -y > /dev/null &
+wait
+yum install epel-release -y > /dev/null &
+wait
+yum repolist enabled > /dev/null &
+wait
 
-yum install ocserv certbot -y > /dev/null
+yum install ocserv certbot -y > /dev/null &
+wait
 
-netstat -tulnp
+#netstat -tulnp &
+#wait
 
-sleep 3
+#sleep 3
 
-certbot certonly --standalone --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME
+certbot certonly --standalone --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME &
+wait
 
 
 sed -i 's/auth = "pam\[gid-min=1000]"/auth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
@@ -79,45 +86,57 @@ iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
-sysctl -p # apply wihout rebooting
-
+sysctl -p & # apply wihout rebooting
+wait
 
 if [[ $LIST != "" ]] ; then
   while read -r -a line; do
 	  echo "For user ${line[0]} password is update with ${line[1]}"
-    echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}"
+    echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}" &
+    wait
   done < $LIST
   exit
 fi
 
-sleep 5
 
 
-systemctl enable ocserv.service
 
-systemctl mask ocserv.socket
+systemctl enable ocserv.service &
+wait
 
-cp /lib/systemd/system/ocserv.service /etc/systemd/system/ocserv.service
+systemctl mask ocserv.socket &
+wait
+
+cp /lib/systemd/system/ocserv.service /etc/systemd/system/ocserv.service &
+wait
 
 sed -i 's/Requires=ocserv.socket/#Requires=ocserv.socket/' /etc/systemd/system/ocserv.service
 sed -i 's/Also=ocserv.socket/#Also=ocserv.socket/' /etc/systemd/system/ocserv.service
 
-systemctl daemon-reload
-systemctl stop ocserv.socket > /dev/null
-systemctl disable ocserv.socket > /dev/null
-systemctl restart ocserv.service > /dev/null
+systemctl daemon-reload &
+wait
+systemctl stop ocserv.socket > /dev/null &
+wait
+systemctl disable ocserv.socket > /dev/null &
+wait
+systemctl restart ocserv.service > /dev/null &
+wait
 systemctl status ocserv.service > /dev/null
 
 iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
 
-yum install iptables-services -y > /dev/null
+yum install iptables-services -y > /dev/null &
+wait
 
-systemctl enable iptables
+systemctl enable iptables &
+wait
 
-service iptables save
+service iptables save &
+wait
 
-systemctl iptables start
+systemctl iptables start &
+wait
 
 journalctl |grep ocserv
 
