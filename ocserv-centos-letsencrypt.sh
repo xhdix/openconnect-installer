@@ -1,18 +1,19 @@
 #!/bin/bash
-# pre-alpha version for openconnect installer in Debian -- let's ecnrypt 
+# pre-alpha version for openconnect installer in Centos -- let's ecnrypt 
 # 
-# bash ocsi.sh -f username-list-file -n host-name -e email-address
+# bash ocserv-cen*.sh -f username-list-file -n host-name -e email-address
 
 usage()
 {
     echo "usage:"
-    echo "bash ocllei.sh -f username-list-file -n host-name -e email-address"
+    echo "bash ocserv-cen*.sh -f username-list-file -n host-name -e email-address"
 }
 
 
 ###### Main
 
-SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`
+SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`  &
+wait
 LIST=""
 HOST_NAME=""
 EMAIL_ADDR=""
@@ -43,62 +44,24 @@ if [[ $SERVER_IP == "" ]] ; then
   exit
 fi
 
-
-echo 
-echo "LC_ALL=en_US.UTF-8" >> /etc/environment
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
-sh -c "echo 'LC_ALL=en_US.UTF-8\nLANG=en_US.UTF-8' >> /etc/environment"
-
-cat > /etc/default/locale << "EOF"
-LANGUAGE=en_US.UTF-8,
-LC_ALL=en_US.UTF-8,
-LC_MONETARY=en_US.UTF-8,
-LC_ADDRESS=en_US.UTF-8,
-LC_TELEPHONE=en_US.UTF-8,
-LC_NAME=en_US.UTF-8,
-LC_MEASUREMENT=en_US.UTF-8,
-LC_IDENTIFICATION=en_US.UTF-8,
-LC_NUMERIC=en_US.UTF-8,
-LC_PAPER=en_US.UTF-8,
-LANG=en_US.UTF-8
-EOF
-
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-locale-gen en_US en_US.UTF-8 &
+yum update -y &
 wait
-dpkg-reconfigure locales &
-#input ok
-#input ok
-
+yum install epel-release -y > /dev/null &
+wait
+yum repolist enabled > /dev/null &
 wait
 
-locale
-update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 &
-wait
-#apt install language-pack-en-base  
-
-#lsof -i :443
-
-######## set new hostname ******************* 
-hostnamectl
-hostnamectl set-hostname $HOST_NAME &
-wait
-hostnamectl
-
-apt update > /dev/null &
-wait
-apt dist-upgrade -y > /dev/null &
-wait
-apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev -y > /dev/null &
-wait
-apt install ocserv certbot -y > /dev/null &
+yum install ocserv certbot -y > /dev/null &
 wait
 
-certbot certonly --standalone --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME &
+#netstat -tulnp &
+#wait
+
+#sleep 3
+
+certbot certonly --standalone --non-interactive --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME &
 wait
+
 
 sed -i 's/auth = "pam\[gid-min=1000]"/auth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf
@@ -121,9 +84,9 @@ iptables -t nat -A POSTROUTING -j MASQUERADE
 iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
-sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
-
-sysctl -p /etc/sysctl.conf &
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
+sysctl -p & # apply wihout rebooting
 wait
 
 if [[ $LIST != "" ]] ; then
@@ -134,6 +97,8 @@ if [[ $LIST != "" ]] ; then
   done < $LIST
   exit
 fi
+
+
 
 
 systemctl enable ocserv.service &
@@ -156,22 +121,24 @@ systemctl disable ocserv.socket > /dev/null &
 wait
 systemctl restart ocserv.service > /dev/null &
 wait
-systemctl status ocserv.service > /dev/null
+systemctl status ocserv.service
 
-apt install iptables-persistent -y  &
-#input ok 
-#input ok
+iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
 
+
+yum install iptables-services -y &
 wait
 
-iptables-save > /etc/iptables.rules &
+systemctl enable iptables &
 wait
 
+service iptables save &
+wait
+
+systemctl iptables start &
+wait
 
 journalctl |grep ocserv
 
-apt autoremove -y
 
-#reboot
 
-#apt install fail2ban lynis bmon clamav clamav-daemon aide -y
