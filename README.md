@@ -18,17 +18,12 @@ bash ocserv-deb*.sh -f UserPwdList -n my.example.com -e info@gmail.com
 After installing Openconnect on a foreign VPS, just enter these commands on the domestic VPS:
 ```bash
 iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 443 -j DNAT  --to-destination [foreignVPSip]:443
-#iptables -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 443 -j DNAT  --to-destination [foreignVPSip]:443 # Not recommended in the blackout
-#iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 53 -j DNAT  --to-destination [foreignVPSip]:53 # Not required
+iptables -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 443 -j DNAT  --to-destination [foreignVPSip]:443
 iptables -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 53 -j DNAT  --to-destination [foreignVPSip]:53
 iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source [domesticVPSip]
 
 ```
 And then use Openconnect like this:
-``` bash
-echo password|openconnect --no-dtls --resolve=domain.com:domesticVPSip -vu username --passwd-on-stdin https://domain.com
-```
-Or if UDP is used:
-``` bash
-echo password|openconnect --resolve=domain.com:domesticVPSip -vu username --passwd-on-stdin https://domain.com
+```bash
+echo password|openconnect --resolve=domain.com:[domesticVPSip] -vu username --passwd-on-stdin https://domain.com
 ```
