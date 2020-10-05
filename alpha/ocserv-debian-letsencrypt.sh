@@ -2,6 +2,8 @@
 # pre-alpha version for openconnect installer in Debian -- let's ecnrypt 
 # 
 # bash ocserv-deb*.sh -f username-list-file -n host-name -e email-address
+#
+# Note: Debian is not good for being a server. Because it updates too late.
 
 usage()
 {
