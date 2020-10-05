@@ -1,6 +1,10 @@
 #!/bin/bash
-#bash ocusr.sh list-file-name
+#bash adduser.sh list-file-name
 LIST=$1
+if [[ $LIST == "" ]] ; then
+  echo "bash adduser.sh list-file-name"
+  exit
+fi
 if [[ $LIST != "" ]] ; then
   while read -r -a line; do
           echo "For user ${line[0]} password is update with ${line[1]}"
