@@ -1,4 +1,9 @@
-# Automatically set up an Openconnect/Anyconnect VPN server(ocserv) with Let's Encrypt with just one command in CentOS 8.
+# Automatically set up an Openconnect VPN server(ocserv) with Let's Encrypt with just one command.
+
+* Secured with a valid certificate from Let's encrypt
+* No IP Leak
+* No DNS Leak
+* No request/send from/to external/third party sources
 
 All you need: A CentOS 8 server with a domain.
 
