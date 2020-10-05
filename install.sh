@@ -1,5 +1,5 @@
 #!/bin/bash
-# openconnect/anyconnect server (ocserv) installer in Centos + let's ecnrypt 
+# openconnect/anyconnect server (ocserv) installer in centos + let's ecnrypt 
 # 
 # bash install.sh -f username-list-file -n host-name -e email-address
 
@@ -37,19 +37,7 @@ while [[ $1 != "" ]]; do
     shift
 done
 
-if [[ $HOST_NAME == "" ]] ; then
-  usage
-  exit
-fi
-
-
-if [[ $EMAIL_ADDR == "" ]] ; then
-  usage
-  exit
-fi
-
-
-if [[ $LIST == "" ]] ; then
+if [[ $HOST_NAME == "" ]] || [[ $EMAIL_ADDR == "" ]] || [[ $LIST == "" ]] ; then
   usage
   exit
 fi
@@ -76,7 +64,7 @@ wait
 sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf
 sed -i 's/#dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf
-sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf
+sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf # !=  = DNS Leak
 sed -i "s/server-cert = \/etc\/pki\/ocserv\/public\/server.crt/server-cert=\/etc\/letsencrypt\/live\/$HOST_NAME\/fullchain.pem/" /etc/ocserv/ocserv.conf
 sed -i "s/server-key = \/etc\/pki\/ocserv\/private\/server.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf
 sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf
@@ -84,9 +72,9 @@ sed -i 's/#ipv4-netmask = 255.255.255.0/ipv4-netmask = 255.255.255.0/' /etc/ocse
 sed -i 's/max-clients = 16/max-clients = 128/' /etc/ocserv/ocserv.conf
 sed -i 's/max-same-clients = 2/max-same-clients = 4/' /etc/ocserv/ocserv.conf
 #sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf
-#sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf # for use server like gateway
+#sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf # for use server like gateway = IP Leak
 sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
-#sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf # if there is problem with DTLS/UDP
+#sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf # if there is a problem with DTLS/UDP
 
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 iptables -I INPUT -p udp --dport 443,53 -j ACCEPT
@@ -141,7 +129,7 @@ wait
 iptables-save > /etc/iptables.rules &
 wait
 
-yum install iptables-services -y &
+yum install iptables-services -y > /dev/null &
 wait
 
 systemctl enable iptables &
