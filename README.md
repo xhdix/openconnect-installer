@@ -1,15 +1,24 @@
 # openconnect-installer
-Openconnect installer - in CentOS
+Set up an Openconnect VPN server automatically with just one command in CentOS.
+All you need: A CentOS 8 server with a domain
 
-```
-bash ocserv-cen*.sh -f username-list-file -n host-name -e email-address
+Install, configure, run with one command:
+```bash
+bash install.sh -f username-list-file -n host-name -e email-address
 
 e.g. :
 
-bash ocserv-cen*.sh -f UserPwdList -n my.example.com -e info@gmail.com
+bash install.sh -f pass.txt -n my.example.com -e info@gmail.com
 ```
 
-# Bypass the Internet blackout
+If you want to add a list of users again after installation::
+```bash
+bash adduser.sh username-list-file
+
+e.g. :
+bash adduser.sh pass2.text
+```
+## Bypass the Internet blackout
 
 ![image](https://ooni.org/post/2019-iran-internet-blackout/11.png)
 (reference: https://ooni.org/post/2019-iran-internet-blackout/#connecting-to-the-internet-from-iran)
