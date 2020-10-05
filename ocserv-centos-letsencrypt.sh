@@ -12,8 +12,6 @@ usage()
 
 ###### Main
 
-SERVER_IP=`ip addr show | awk '/inet/ {print $2}' | grep -v "127.0.0.1" | grep -v "::" | cut -f1 -d"/"`  &
-wait
 LIST=""
 HOST_NAME=""
 EMAIL_ADDR=""
@@ -39,7 +37,19 @@ while [[ $1 != "" ]]; do
     shift
 done
 
-if [[ $SERVER_IP == "" ]] ; then
+if [[ $HOST_NAME == "" ]] ; then
+  usage
+  exit
+fi
+
+
+if [[ $EMAIL_ADDR == "" ]] ; then
+  usage
+  exit
+fi
+
+
+if [[ $LIST == "" ]] ; then
   usage
   exit
 fi
@@ -63,29 +73,29 @@ certbot certonly --standalone --non-interactive --preferred-challenges http --ag
 wait
 
 
-sed -i 's/auth = "pam\[gid-min=1000]"/auth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
+sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf
 sed -i 's/dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf
 sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf
-sed -i "s/server-cert = \/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/server-cert=\/etc\/letsencrypt\/live\/$HOST_NAME\/fullchain.pem/" /etc/ocserv/ocserv.conf
-sed -i "s/server-key = \/etc\/ssl\/private\/ssl-cert-snakeoil.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf
-sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf
-sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf
+sed -i "s/server-cert = \/etc\/pki\/ocserv\/public\/server.crt/server-cert=\/etc\/letsencrypt\/live\/$HOST_NAME\/fullchain.pem/" /etc/ocserv/ocserv.conf
+sed -i "s/server-key = \/etc\/pki\/ocserv\/private\/server.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf
+sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf
+sed -i 's/#ipv4-netmask = 255.255.255.0/ipv4-netmask = 255.255.255.0/' /etc/ocserv/ocserv.conf
+sed -i 's/max-clients = 16/max-clients = 128/' /etc/ocserv/ocserv.conf
+sed -i 's/max-same-clients = 2/max-same-clients = 4/' /etc/ocserv/ocserv.conf
+#sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf
 #sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf # for use server like gateway
-sed -i 's/route = 10.10.10.0\/255.255.255.0/#route = 10.10.10.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
-sed -i 's/route = 192.168.0.0\/255.255.0.0/#route = 192.168.0.0\/255.255.0.0/' /etc/ocserv/ocserv.conf
-sed -i 's/route = fef4:db8:1000:1001::\/64/#route = fef4:db8:1000:1001::\/64/' /etc/ocserv/ocserv.conf
 sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
-sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf
+#sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf # if there is problem with DTLS/UDP
 
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT
-#iptables -I INPUT -p udp --dport 443 -j ACCEPT
+iptables -I INPUT -p udp --dport 443,53 -j ACCEPT
 iptables -t nat -A POSTROUTING -j MASQUERADE
 iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
+#iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
-echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
+#echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
 sysctl -p & # apply wihout rebooting
 wait
 
@@ -96,7 +106,8 @@ if [[ $LIST != "" ]] ; then
     wait
   done < $LIST
   exit
-fi
+fi &
+wait
 
 
 
@@ -121,10 +132,14 @@ systemctl disable ocserv.socket > /dev/null &
 wait
 systemctl restart ocserv.service > /dev/null &
 wait
-systemctl status ocserv.service
+systemctl status ocserv.service &
+wait
 
-iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT &
+wait
 
+iptables-save > /etc/iptables.rules &
+wait
 
 yum install iptables-services -y &
 wait
@@ -135,7 +150,7 @@ wait
 service iptables save &
 wait
 
-systemctl iptables start &
+systemctl start iptables &
 wait
 
 journalctl |grep ocserv
