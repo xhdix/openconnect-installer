@@ -18,6 +18,9 @@ bash adduser.sh username-list-file
 e.g. :
 bash adduser.sh pass2.text
 ```
+
+Do you want to run `ocserv` on a new port with a different configuration? Take a look at `copyoc.sh`.
+
 ## Bypass the Internet blackout
 
 ![image](https://ooni.org/post/2019-iran-internet-blackout/11.png)
