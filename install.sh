@@ -52,11 +52,6 @@ wait
 yum install ocserv certbot -y > /dev/null &
 wait
 
-#netstat -tulnp &
-#wait
-
-#sleep 3
-
 certbot certonly --standalone --non-interactive --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME &
 wait
 
@@ -80,7 +75,7 @@ iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 iptables -I INPUT -p udp --dport 443,53 -j ACCEPT
 iptables -t nat -A POSTROUTING -j MASQUERADE
 iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-#iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
+iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 #echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
@@ -94,11 +89,10 @@ if [[ $LIST != "" ]] ; then
     wait
   done < $LIST
   exit
-fi &
+fi
+
+echo "add users finished" &
 wait
-
-
-
 
 systemctl enable ocserv.service &
 wait
@@ -123,8 +117,9 @@ wait
 systemctl status ocserv.service &
 wait
 
-iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT &
-wait
+#iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT & # Allow SSH port. Is this port really configured?
+#iptables -P INPUT DROP & # If you have not ACCEPT the SSH port connection before, do not run this command! 
+#wait
 
 iptables-save > /etc/iptables.rules &
 wait
