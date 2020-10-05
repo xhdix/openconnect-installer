@@ -1,12 +1,12 @@
 #!/bin/bash
-# pre-alpha version for openconnect installer in Centos -- let's ecnrypt 
+# openconnect/anyconnect server (ocserv) installer in Centos + let's ecnrypt 
 # 
-# bash ocserv-cen*.sh -f username-list-file -n host-name -e email-address
+# bash install.sh -f username-list-file -n host-name -e email-address
 
 usage()
 {
     echo "usage:"
-    echo "bash ocserv-cen*.sh -f username-list-file -n host-name -e email-address"
+    echo "bash install.sh -f username-list-file -n host-name -e email-address"
 }
 
 
