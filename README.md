@@ -1,8 +1,9 @@
-# openconnect-installer
-Set up an Openconnect VPN server automatically with just one command in CentOS.
-All you need: A CentOS 8 server with a domain
+# Install Openconnect/Anyconnect VPN server(ocserv) with Let's Encrypt in CentOS
+Automatically set up an Openconnect VPN server(ocserv) with Let's Encrypt with just one command in CentOS 8.
 
-Install, configure, run with one command:
+All you need: A CentOS 8 server with a domain.
+
+### Install, configure, run with one command:
 ```bash
 bash install.sh -f username-list-file -n host-name -e email-address
 
@@ -11,7 +12,7 @@ e.g. :
 bash install.sh -f pass.txt -n my.example.com -e info@gmail.com
 ```
 
-If you want to add a list of users again after installation::
+#### If you want to add a list of users again after installation:
 ```bash
 bash adduser.sh username-list-file
 
