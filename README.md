@@ -23,6 +23,11 @@ bash adduser.sh username-list-file
 e.g. :
 bash adduser.sh pass2.text
 ```
+#### Renew the certificate before/after 3 months:
+
+```bash
+certbot renew --quiet && systemctl restart ocserv # && systemctl restart ocserv2
+```
 
 Do you want to run `ocserv` on a new port with a different configuration? Take a look at `copyoc.sh`.
 
