@@ -32,7 +32,7 @@ if [[ $UPDATE == "" ]] ; then
 
   sed -i 's/PIDFile=\/var\/run\/ocserv.pid/PIDFile=\/var\/run\/ocserv2.pid/' /etc/systemd/system/ocserv2.service &
   sed -i 's/ExecStartPre=\/usr\/sbin\/ocserv-genkey/ExecStartPre=\/usr\/sbin\/ocserv2-genkey/' /etc/systemd/system/ocserv2.service &
-  sed -i 's/ExecStart=\/usr\/sbin\/ocserv2 --pid-file \/var\/run\/ocserv2.pid --config \/etc\/ocserv\/ocserv2.conf -f/ExecStart=\/usr\/sbin\/ocserv2 --pid-file \/var\/run\/ocserv2.pid --config \/etc\/ocserv\/ocserv2.conf -f/' /etc/systemd/system/ocserv2.service &
+  sed -i 's/ExecStart=\/usr\/sbin\/ocserv --pid-file \/var\/run\/ocserv.pid --config \/etc\/ocserv\/ocserv.conf -f/ExecStart=\/usr\/sbin\/ocserv2 --pid-file \/var\/run\/ocserv2.pid --config \/etc\/ocserv\/ocserv2.conf -f/' /etc/systemd/system/ocserv2.service &
   wait
 
   systemctl daemon-reload &
