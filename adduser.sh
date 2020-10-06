@@ -4,8 +4,7 @@ LIST=$1
 if [[ $LIST == "" ]] ; then
   echo "bash adduser.sh list-file-name"
   exit
-fi
-if [[ $LIST != "" ]] ; then
+else
   while read -r -a line; do
           echo "For user ${line[0]} password is update with ${line[1]}"
     echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}"
