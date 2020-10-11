@@ -56,29 +56,35 @@ certbot certonly --standalone --non-interactive --preferred-challenges http --ag
 wait
 
 
-sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf
-sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf
-sed -i 's/#dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf
-sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf # !=  = DNS Leak
-sed -i "s/server-cert = \/etc\/pki\/ocserv\/public\/server.crt/server-cert=\/etc\/letsencrypt\/live\/$HOST_NAME\/fullchain.pem/" /etc/ocserv/ocserv.conf
-sed -i "s/server-key = \/etc\/pki\/ocserv\/private\/server.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf
-sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf
-sed -i 's/#ipv4-netmask = 255.255.255.0/ipv4-netmask = 255.255.255.0/' /etc/ocserv/ocserv.conf
-sed -i 's/max-clients = 16/max-clients = 128/' /etc/ocserv/ocserv.conf
-sed -i 's/max-same-clients = 2/max-same-clients = 4/' /etc/ocserv/ocserv.conf
-#sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf
-#sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf # for use server like gateway = IP Leak
-sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255.255.0/' /etc/ocserv/ocserv.conf
-#sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf # if there is a problem with DTLS/UDP
+sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf &
+sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf &
+sed -i 's/#dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf &
+sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf & # !=  = DNS Leak
+sed -i "s/server-cert = \/etc\/pki\/ocserv\/public\/server.crt/server-cert=\/etc\/letsencrypt\/live\/$HOST_NAME\/fullchain.pem/" /etc/ocserv/ocserv.conf &
+sed -i "s/server-key = \/etc\/pki\/ocserv\/private\/server.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf &
+sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf &
+sed -i 's/#ipv4-netmask = 255.255.255.0/ipv4-netmask = 255.255.255.0/' /etc/ocserv/ocserv.conf &
+sed -i 's/max-clients = 16/max-clients = 128/' /etc/ocserv/ocserv.conf &
+sed -i 's/max-same-clients = 2/max-same-clients = 4/' /etc/ocserv/ocserv.conf &
+#sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf &
+#sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf & # for use server like gateway = IP Leak
+sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255.255.0/' /etc/ocserv/ocserv.conf &
+#sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf & # if there is a problem with DTLS/UDP
+wait
 
-iptables -I INPUT -p tcp --dport 443 -j ACCEPT
-iptables -I INPUT -p udp --dport 443,53 -j ACCEPT
-iptables -t nat -A POSTROUTING -j MASQUERADE
-iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT
+iptables -I INPUT -p tcp --dport 22 -j ACCEPT & # SSH port
+iptables -I INPUT -p tcp --dport 443 -j ACCEPT &
+iptables -I INPUT -p udp --dport 443 -j ACCEPT &
+iptables -I INPUT -p udp --dport 53 -j ACCEPT &
+iptables -t nat -A POSTROUTING -j MASQUERADE &
+iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
+iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT &
+wait
 
-echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf&
 #echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
+wait
+
 sysctl -p & # apply wihout rebooting
 wait
 
@@ -88,7 +94,6 @@ if [[ $LIST != "" ]] ; then
     echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}" &
     wait
   done < $LIST
-  exit
 fi
 
 echo "add users finished" &
