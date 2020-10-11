@@ -56,7 +56,7 @@ certbot certonly --standalone --non-interactive --preferred-challenges http --ag
 wait
 
 
-sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/g' /etc/ocserv/ocserv.conf &
+sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/' /etc/ocserv/ocserv.conf &
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf &
 sed -i 's/#dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf &
 sed -i 's/#tunnel-all-dns = true/tunnel-all-dns = true/' /etc/ocserv/ocserv.conf & # !=  = DNS Leak
@@ -81,7 +81,7 @@ iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISH
 iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT &
 wait
 
-echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf&
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf &
 #echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
 wait
 
