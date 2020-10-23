@@ -53,11 +53,11 @@ if [[ $UPDATE == "" ]] ; then
   systemctl restart ocserv2 &
   wait
 
-  journalctl |grep ocserv2
+  journalctl -u ocserv2
   
 else
-  cp -f /etc/ocserv/ocserv.conf /etc/ocserv/ocserv2.conf &
-  wait
+  # cp -f /etc/ocserv/ocserv.conf /etc/ocserv/ocserv2.conf &
+  # wait
   
   cp -f /var/run/ocserv.pid /var/run/ocserv2.pid
   cp -f /usr/sbin/ocserv-worker /usr/sbin/ocserv2-worker
