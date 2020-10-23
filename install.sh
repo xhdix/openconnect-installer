@@ -143,7 +143,7 @@ wait
 systemctl start iptables &
 wait
 
-journalctl |grep ocserv
+journalctl -u ocserv
 
 
 
