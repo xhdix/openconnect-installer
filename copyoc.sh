@@ -42,8 +42,8 @@ if [[ $UPDATE == "" ]] ; then
   wait
 
   iptables -I INPUT -p tcp --dport 2083 -j ACCEPT &
-  iptables -A FORWARD -d 192.168.127.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
-  iptables -A FORWARD -s 192.168.127.0/21 -j ACCEPT &
+  iptables -A FORWARD -d 192.168.127.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
+  iptables -A FORWARD -s 192.168.127.0 -j ACCEPT &
   wait
   
   service iptables save &
