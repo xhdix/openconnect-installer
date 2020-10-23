@@ -77,8 +77,8 @@ iptables -I INPUT -p tcp --dport 443 -j ACCEPT &
 iptables -I INPUT -p udp --dport 443 -j ACCEPT &
 iptables -I INPUT -p udp --dport 53 -j ACCEPT &
 iptables -t nat -A POSTROUTING -j MASQUERADE &
-iptables -I FORWARD -d 192.168.128.0/21 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
-iptables -A FORWARD -s 192.168.128.0/21 -j ACCEPT &
+iptables -I FORWARD -d 192.168.128.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
+iptables -A FORWARD -s 192.168.128.0 -j ACCEPT &
 wait
 
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf &
