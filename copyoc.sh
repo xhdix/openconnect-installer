@@ -1,8 +1,11 @@
 #!/bin/bash
-# copy ocserv with only with tcp config on port 2083
-#bash copyoc.sh 
-#bash copyoc.sh -u tcp-port
-#bash copyoc.sh family
+# Run two copies of ocserv on the same server
+# bash ./copyoc.sh -p <port> [--family]
+# bash ./copyoc.sh --tcp-port <port> [--family]
+# bash ./copyoc.sh --tcp-port <port> --udp-port <port> [--family]
+#
+# For update files only:
+# bash ./copyoc.sh -u <port/tcp-port>
 
 
 usage()
