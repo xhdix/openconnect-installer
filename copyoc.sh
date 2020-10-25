@@ -96,7 +96,7 @@ if [[ ! $UPDATE ]] ; then
   sed -i "s/socket-file = ocserv.sock/socket-file = ocserv$POSTFIX.sock/" /etc/ocserv/ocserv$POSTFIX.conf
   sed -i "s/chroot-dir = \/var\/lib\/ocserv/chroot-dir = \/var\/lib\/ocserv$POSTFIX/" /etc/ocserv/ocserv$POSTFIX.conf
   sed -i "s/pid-file = \/var\/run\/ocserv.pid/pid-file = \/var\/run\/ocserv$POSTFIX.pid/" /etc/ocserv/ocserv$POSTFIX.conf
-  sed -i "s/device = vpns/device = vpn$POSTFIXs/" /etc/ocserv/ocserv$POSTFIX.conf
+  sed -i 's/device = vpns/device = vpn'"$POSTFIX"'s/' /etc/ocserv/ocserv$POSTFIX.conf
   sed -i "s/ipv4-network = 192.168.128.0/ipv4-network = 192.168.1${POSTFIX: -2}.0/" /etc/ocserv/ocserv$POSTFIX.conf
 
   if [[ $FAMILY ]] ; then
