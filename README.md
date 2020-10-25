@@ -28,8 +28,25 @@ bash adduser.sh pass2.text
 ```bash
 certbot renew --quiet && systemctl restart ocserv # && systemctl restart ocserv2
 ```
-
+### Run two copies of `ocserv` on the same server
 Do you want to run `ocserv` on a new port with a different configuration? Take a look at `copyoc.sh`.
+
+#### New `ocserv` copy
+```bash
+ bash ./copyoc.sh -p <port>
+
+e.g. :
+bash ./copyoc.sh -p 8443
+```
+
+#### New `ocserv` copy for families (Cloudflare DNS for families)
+Will block malware and adult content in the new VPN service
+```bash
+ bash ./copyoc.sh -p <port> -f
+ 
+ e.g. :
+ bash ./copyoc.sh -p 2222 -f
+```
 
 ## Bypass the Internet blackout
 
