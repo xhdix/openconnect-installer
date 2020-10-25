@@ -14,6 +14,11 @@ usage()
     echo "bash ./copyoc.sh -u <port>"
 }
 
+FAMILY=false
+PORT=
+TPORT=
+UPORT=
+UPDATE=
 
 while [[ $1 != "" ]]; do
     case $1 in
@@ -42,12 +47,12 @@ while [[ $1 != "" ]]; do
     shift
 done
 
-if [[ $PORT == "443" ]] || ( [[ $TPORT == "443" ]] || [[ $UPORT == "443" ]] ) ; then
+if [[ $PORT == "443" ]] || [[ $TPORT == "443" ]] || [[ $UPORT == "443" ]] ; then
   echo "If you changed the install.sh code, you need to change this as well! :)"
   exit
 fi
 
-if [[ $UPDATE == "" ]] ) ; then
+if [[ $UPDATE == "" ]] ; then
   echo "usage:"
   echo "bash ./copyoc.sh -u port/tcp-port"
   echo "e.g. : bash ./copyoc.sh -u 2083"
@@ -56,7 +61,7 @@ fi
 
 if [[ ! $UPDATE ]] ; then
   POSTFIX="2"
-  if [[ $PORT == "" ]] && [[ $TPORT == "" ]] && [[ $UPORT == "" ]] ) ; then
+  if [[ $PORT == "" ]] && [[ $TPORT == "" ]] && [[ $UPORT == "" ]] ; then
     PORT=2083
     POSTFIX="$PORT"
     cp -f /etc/ocserv/ocserv.conf /etc/ocserv/ocserv$POSTFIX.conf &
