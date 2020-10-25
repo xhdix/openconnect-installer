@@ -52,13 +52,6 @@ if [[ $PORT == "443" ]] || [[ $TPORT == "443" ]] || [[ $UPORT == "443" ]] ; then
   exit
 fi
 
-if [[ $UPDATE == "" ]] ; then
-  echo "usage:"
-  echo "bash ./copyoc.sh -u port/tcp-port"
-  echo "e.g. : bash ./copyoc.sh -u 2083"
-  exit
-fi
-
 if [[ ! $UPDATE ]] ; then
   POSTFIX="2"
   if [[ $PORT == "" ]] && [[ $TPORT == "" ]] && [[ $UPORT == "" ]] ; then
@@ -137,9 +130,10 @@ if [[ ! $UPDATE ]] ; then
   service iptables save &
   wait
 
-
   systemctl restart ocserv$POSTFIX &
   wait
+
+  echo "done!"
 
   journalctl -u ocserv$POSTFIX
   
@@ -156,5 +150,6 @@ elif [[ $UPDATE != "" ]] ; then
   cp -rf  /var/lib/ocserv  /var/lib/ocserv$POSTFIX &
   wait
   
+  echo "done!"
   echo "now run: systemctl restart ocserv$POSTFIX"
 fi
