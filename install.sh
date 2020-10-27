@@ -52,9 +52,25 @@ wait
 yum install ocserv certbot -y > /dev/null &
 wait
 
-certbot certonly --standalone --non-interactive --preferred-challenges http --agree-tos --email $EMAIL_ADDR -d $HOST_NAME &
+echo "
+server {
+      listen 80;
+      server_name $HOST_NAME;
+
+      root /usr/share/nginx/html/;
+
+      location ~ /.well-known/acme-challenge {
+         allow all;
+      }
+}
+" >  /etc/nginx/conf.d/$HOST_NAME.conf &
 wait
 
+systemctl reload nginx &
+wait
+
+certbot certonly --webroot --non-interactive --agree-tos --email $EMAIL_ADDR -d $HOST_NAME -w /usr/share/nginx/html/ &
+wait
 
 sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/' /etc/ocserv/ocserv.conf &
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf &
