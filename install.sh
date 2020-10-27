@@ -85,12 +85,13 @@ sed -i 's/max-same-clients = 2/max-same-clients = 4/' /etc/ocserv/ocserv.conf &
 #sed -i 's/#mtu = 1420/mtu = 1420/' /etc/ocserv/ocserv.conf &
 #sed -i 's/#route = default/route = default/' /etc/ocserv/ocserv.conf & # for use server like gateway = IP Leak
 sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255.255.0/' /etc/ocserv/ocserv.conf &
-#sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf & # if there is a problem with DTLS/UDP
+sed -i 's/tcp-port = 443/tcp-port = 2083/' /etc/ocserv/ocserv.conf
+sed -i 's/udp-port = 443/udp-port = 2083/' /etc/ocserv/ocserv.conf
 wait
 
 iptables -I INPUT -p tcp --dport 22 -j ACCEPT & # SSH port
-iptables -I INPUT -p tcp --dport 443 -j ACCEPT &
-iptables -I INPUT -p udp --dport 443 -j ACCEPT &
+iptables -I INPUT -p tcp --dport 2083 -j ACCEPT &
+iptables -I INPUT -p udp --dport 2083 -j ACCEPT &
 iptables -I INPUT -p udp --dport 53 -j ACCEPT &
 iptables -t nat -A POSTROUTING -j MASQUERADE &
 iptables -I FORWARD -d 192.168.128.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
