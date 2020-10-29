@@ -16,6 +16,12 @@ LIST=""
 HOST_NAME=""
 EMAIL_ADDR=""
 
+if [[ $(dnf -q check-update | wc -l) > 0 ]] ; then
+    echo 'You must be updated before this script.'
+    echo 'Run: yum update'
+    exit
+fi
+
 while [[ $1 != "" ]]; do
     case $1 in
         -f | --list )     shift
@@ -42,16 +48,20 @@ if [[ $HOST_NAME == "" ]] || [[ $EMAIL_ADDR == "" ]] || [[ $LIST == "" ]] ; then
   exit
 fi
 
-yum update -y &
+echo '[0%  ] Start installation...'
+yum -q update -y  > /dev/null &
 wait
 yum install epel-release -y > /dev/null &
 wait
 yum repolist enabled > /dev/null &
 wait
+yum -q update --assumeno > /dev/null &
+wait
 
 yum install ocserv certbot -y > /dev/null &
 wait
 
+echo '[10%  ] Adding' $HOST_NAME 'to Nginx...'
 echo "
 server {
       listen 80;
@@ -69,9 +79,11 @@ wait
 systemctl reload nginx &
 wait
 
+echo '[20%  ] Request a valid certificate...'
 certbot certonly --webroot --non-interactive --agree-tos --email $EMAIL_ADDR -d $HOST_NAME -w /usr/share/nginx/html/ &
 wait
 
+echo '[30%  ] Changing the default settings...'
 sed -i 's/auth = "pam"/#auth = "pam"\nauth = "plain\[\/etc\/ocserv\/ocpasswd]"/' /etc/ocserv/ocserv.conf &
 sed -i 's/try-mtu-discovery = false/try-mtu-discovery = true/' /etc/ocserv/ocserv.conf &
 sed -i 's/#dns = 192.168.1.2/dns = 1.1.1.1\ndns = 8.8.8.8/' /etc/ocserv/ocserv.conf &
@@ -89,6 +101,7 @@ sed -i 's/tcp-port = 443/tcp-port = 2083/' /etc/ocserv/ocserv.conf
 sed -i 's/udp-port = 443/udp-port = 2083/' /etc/ocserv/ocserv.conf
 wait
 
+echo '[40%  ] Adding iptables items...'
 iptables -I INPUT -p tcp --dport 22 -j ACCEPT & # SSH port
 iptables -I INPUT -p tcp --dport 2083 -j ACCEPT &
 iptables -I INPUT -p udp --dport 2083 -j ACCEPT &
@@ -98,6 +111,7 @@ iptables -I FORWARD -d 192.168.128.0 -m conntrack --ctstate RELATED,ESTABLISHED 
 iptables -A FORWARD -s 192.168.128.0 -j ACCEPT &
 wait
 
+echo '[50%  ] Activating the ip_forward feature...'
 echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf &
 #echo "net.ipv4.conf.all.proxy_arp = 1" >> /etc/sysctl.conf
 wait
@@ -105,18 +119,19 @@ wait
 sysctl -p & # apply wihout rebooting
 wait
 
+echo '[60%  ] Adding users...'
+echo ''
 if [[ $LIST != "" ]] ; then
   while read -r -a line; do
     if [[ "${line[0]}" != "" ]] ; then
-      echo "For user ${line[0]} password updated with ${line[1]}"
+      echo "   For user ${line[0]} password updated with ${line[1]}"
       echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}" &
       wait
     fi
   done < $LIST
 fi
 
-echo "add users finished" &
-wait
+echo '[70%  ] Preparing ocserv service...'
 
 systemctl enable ocserv.service &
 wait
@@ -136,15 +151,18 @@ systemctl stop ocserv.socket > /dev/null &
 wait
 systemctl disable ocserv.socket > /dev/null &
 wait
+
+echo '[80%  ] Start ocserv service...'
 systemctl restart ocserv.service > /dev/null &
 wait
-systemctl status ocserv.service &
-wait
+#systemctl status ocserv.service &
+#wait
 
 #iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT & # Allow SSH port. Is this port really configured?
 #iptables -P INPUT DROP & # If you have not ACCEPT the SSH port connection before, do not run this command! 
 #wait
 
+echo '[90%  ] Persistent iptables rules...'
 iptables-save > /etc/iptables.rules &
 wait
 
@@ -160,7 +178,7 @@ wait
 systemctl start iptables &
 wait
 
-journalctl -u ocserv
-
-
-
+echo '[100% ] Your VPN server is ready to use.'
+echo ''
+echo 'Please check the ocserv logs with: journalctl -u ocserv'
+echo ''
