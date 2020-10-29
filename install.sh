@@ -82,7 +82,6 @@ sed -i 's/no-route = 192.168.5.0\/255.255.255.0/#no-route = 192.168.5.0\/255.255
 #sed -i 's/udp-port = 443/#udp-port = 443/' /etc/ocserv/ocserv.conf & # if there is a problem with DTLS/UDP
 wait
 
-
 echo '[40%  ] Adding iptables items...'
 iptables -I INPUT -p tcp --dport 22 -j ACCEPT & # SSH port
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT &
@@ -161,6 +160,6 @@ systemctl start iptables &
 wait
 
 echo '[100% ] Your VPN server is ready to use.'
-
+echo ''
 echo 'Please check the ocserv logs with: journalctl -u ocserv'
-
+echo ''
