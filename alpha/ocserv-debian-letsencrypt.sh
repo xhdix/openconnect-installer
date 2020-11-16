@@ -137,7 +137,6 @@ if [[ $LIST != "" ]] ; then
     echo "${line[1]}" | ocpasswd -c /etc/ocserv/ocpasswd "${line[0]}" &
     wait
   done < $LIST
-  exit
 fi
 
 
