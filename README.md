@@ -7,6 +7,8 @@
 
 All you need: A CentOS 8 server with a domain.
 
+**Note 21/02/2021: If you want to use it in Iran, disable UDP and don't use the Anyconnect client!**
+
 ### Install, configure, run with one command:
 ```bash
 bash install.sh -f username-list-file -n host-name -e email-address
