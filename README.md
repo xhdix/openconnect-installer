@@ -7,7 +7,7 @@
 
 All you need: A CentOS 8 server with a domain.
 
-**Note 21/02/2021: If you want to use it in Iran, disable UDP and don't use the Anyconnect client!**
+Note 05/09/2021: If you had any problem, disable UDP and do not use the Anyconnect client app for a while!
 
 ### Install, configure, run with one command:
 ```bash
@@ -17,6 +17,9 @@ e.g. :
 
 bash install.sh -f pass.txt -n my.example.com -e info@gmail.com
 ```
+
+Note: By changing the script, you can get a certificate without an email address. But it is better not to.
+(`--email $EMAIL_ADDR` to `--register-unsafely-without-email`)
 
 #### If you want to add a list of users again after installation:
 ```bash
