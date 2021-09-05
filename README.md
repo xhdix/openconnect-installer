@@ -66,10 +66,26 @@ iptables -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 443 -j DNAT  --to-de
 iptables -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 53 -j DNAT  --to-destination [foreignVPSip]:53
 iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source [domesticVPSip]
 
+
 ```
 _(Note: Make sure you use the correct network interface name. e.g. eth0 or enp0s3 or ... )_
+
+Then save iptables:
+```bash
+yum install iptables-services -y
+
+systemctl enable iptables
+
+service iptables save
+
+systemctl start iptables
+```
 
 And then use Openconnect like this:
 ```bash
 echo password|openconnect --resolve=domain.com:[domesticVPSip] -vu username --passwd-on-stdin https://domain.com
 ```
+Or temporary change `A` record to domestic VPS ip.
+
+
+**Please let me know if there is any problem.**
