@@ -9,6 +9,8 @@ All you need: A CentOS 8 server with a domain.
 
 Note 05/09/2021: If you had any problem, disable UDP and do not use the Anyconnect client app for a while!
 
+Note 23/09/2021: Change the server or server IP every 3 months to prevent Google from tracking and flagging your server's IP.
+
 ### Install, configure, run with one command:
 ```bash
 bash install.sh -f username-list-file -n host-name -e email-address
