@@ -58,6 +58,9 @@ wait
 yum -q update --assumeno > /dev/null &
 wait
 
+yum install iptables-services -y > /dev/null &
+wait
+
 yum install ocserv certbot -y > /dev/null &
 wait
 
@@ -164,9 +167,6 @@ wait
 
 echo '[90%  ] Persistent iptables rules...'
 iptables-save > /etc/iptables.rules &
-wait
-
-yum install iptables-services -y > /dev/null &
 wait
 
 systemctl enable iptables &
