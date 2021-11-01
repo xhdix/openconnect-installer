@@ -81,7 +81,7 @@ sed -i "s/server-cert = \/etc\/pki\/ocserv\/public\/server.crt/server-cert=\/etc
 wait
 sed -i "s/server-key = \/etc\/pki\/ocserv\/private\/server.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf &
 wait
-sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.128.0/' /etc/ocserv/ocserv.conf &
+sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.2.0/' /etc/ocserv/ocserv.conf &
 wait
 sed -i 's/#ipv4-netmask = 255.255.255.0/ipv4-netmask = 255.255.255.0/' /etc/ocserv/ocserv.conf &
 wait
@@ -107,9 +107,9 @@ iptables -I INPUT -p udp --dport 53 -j ACCEPT &
 wait
 iptables -t nat -A POSTROUTING -j MASQUERADE &
 wait
-iptables -I FORWARD -d 192.168.128.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
+iptables -I FORWARD -d 192.168.2.0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT &
 wait
-iptables -A FORWARD -s 192.168.128.0 -j ACCEPT &
+iptables -A FORWARD -s 192.168.2.0 -j ACCEPT &
 wait
 
 echo '[50%  ] Activating the ip_forward feature...'
