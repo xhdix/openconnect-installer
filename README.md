@@ -9,20 +9,25 @@ All you need: A CentOS 8 server with a domain.
 
 Note 05/09/2021: If you had any problem, disable UDP and do not use the Anyconnect client app for a while!
 
-Note 23/09/2021: Change the server or server IP every 3 months to prevent Google from tracking and flagging your server's IP.
+Note 23/09/2021: Change the server or server IP every 3 months to prevent Google from tracking and [flagging your server's IP](https://gitlab.torproject.org/tpo/anti-censorship/censorship-analysis/-/issues/22369).
 
-### Install, configure, run with one command:
+## Install, configure, run with one command:
+
+Change the username-password list `pass.txt` (or create a new one) and then just run the command like this :
+
 ```bash
 bash install.sh -f username-list-file -n host-name -e email-address
+```
 
-e.g. :
-
-bash install.sh -f pass.txt -n my.example.com -e info@gmail.com
+for example :
+```bash
+bash install.sh -f pass.txt -n my.example.com -e mayemail@gmail.com
 ```
 
 Note: By changing the script, you can get a certificate without an email address. But it is better not to.
 (`--email $EMAIL_ADDR` to `--register-unsafely-without-email`)
 
+-------------------
 #### If you want to add a list of users again after installation:
 ```bash
 bash adduser.sh username-list-file
