@@ -62,7 +62,8 @@ Will block malware and adult content in the new VPN service
 
 ## Bypass the Internet blackout
 
-![image](https://ooni.org/post/2019-iran-internet-blackout/11.png)
+![Bypass the Internet blackout](https://user-images.githubusercontent.com/12384263/140075673-aa31959b-0979-4abc-9fea-dd89a73009d7.png)
+
 (reference: https://ooni.org/post/2019-iran-internet-blackout/#connecting-to-the-internet-from-iran)
 
 After installing Openconnect on a foreign VPS, just enter these commands on the domestic VPS:
