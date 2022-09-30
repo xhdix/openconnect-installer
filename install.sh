@@ -81,6 +81,8 @@ sed -i "s/server-cert = \/etc\/pki\/ocserv\/public\/server.crt/server-cert=\/etc
 wait
 sed -i "s/server-key = \/etc\/pki\/ocserv\/private\/server.key/server-key=\/etc\/letsencrypt\/live\/$HOST_NAME\/privkey.pem/" /etc/ocserv/ocserv.conf &
 wait
+sed -i 's/ipv4-network = 192.168.1.0/ipv4-network = 192.168.2.0/' /etc/ocserv/ocserv.conf &
+wait
 sed -i 's/#ipv4-network = 192.168.1.0/ipv4-network = 192.168.2.0/' /etc/ocserv/ocserv.conf &
 wait
 sed -i 's/#ipv4-netmask = 255.255.255.0/ipv4-netmask = 255.255.255.0/' /etc/ocserv/ocserv.conf &
