@@ -95,5 +95,6 @@ echo password|openconnect --resolve=domain.com:[domesticVPSip] -vu username --pa
 ```
 Or temporary change `A` record to domestic VPS ip.
 
+**Note: The amount of incoming and outgoing traffic on your domestic VPS should not be equal.**
 
 **Please let me know if there is any problem.**
